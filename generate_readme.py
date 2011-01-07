@@ -22,9 +22,14 @@ t = pydoc.TextDoc()
 # So strip out the " |" line beginnings...
 sys.stdout = tmp
 d = t.docclass(SmartClient)
-for l in d.split("\n"):
-  try:
-    if l[0:2] == " |":
-      l = "  " + l[2:]
-  except: pass
-  print l
+d = pydoc.plain(d)
+print """SMArt Python Client Library
+
+To generate this README:
+
+  $ python generate_readme.py > README
+
+---
+
+"""
+print d
