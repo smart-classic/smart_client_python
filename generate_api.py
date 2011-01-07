@@ -2,7 +2,7 @@
 Generate all API methods from SMArt OWL ontology
 """
 
-import os, re, settings
+import os, re
 import RDF
 import common.rdf_ontology as rdf_ontology
 
@@ -59,8 +59,12 @@ def make_generic_call(call):
     return c
 
 def augment(client_class):
-    print "augmenting", rdf_ontology.parsed
     for c in rdf_ontology.api_calls:
-        print "via ", c.path
-        print "and a call", call_name(c)
-        setattr(client_class, call_name(c), make_generic_call(c))
+        call = make_generic_call(c)
+        call.__doc__ = """%s %s
+
+%s
+
+Returns RDF Graph containing:  %s
+     """%(c.method, c.path, c.description, c.target)
+        setattr(client_class, call_name(c), call)
