@@ -3,12 +3,6 @@ from rdflib import Namespace, URIRef, Literal, BNode
 from StringIO import StringIO as sIO
 
 
-rdflib.plugin.register('sparql', rdflib.query.Processor,
-                       'rdfextras.sparql.processor', 'Processor')
-
-rdflib.plugin.register('sparql', rdflib.query.Result,
-                       'rdfextras.sparql.query', 'SPARQLQueryResult')
-
 rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 rdfs = Namespace('http://www.w3.org/2000/01/rdf-schema#')
 owl = Namespace('http://www.w3.org/2002/07/owl#')
@@ -46,7 +40,7 @@ def get_property(model, s, p, raw_statement=False):
 
 def remap_node(model, old_node, new_node=None):
     if (new_node == None):
-        new_node = URIRef(uri_string="http://reified_node_" + str(old_node))
+        new_node = URIRef("http://reified_node_" + str(old_node))
 
     for s in list(model.triples((old_node, None, None))):
         model.remove(s)
