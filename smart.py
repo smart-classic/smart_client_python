@@ -168,7 +168,7 @@ class SmartClient(OAuthClient):
         r = self.post("/apps/%s/tokens/records/first"%self.app_id)
         
         while r:
-            print r
+            #print r
             p = {}
             for pair in r.split('&'):
                 (k, v) = [urllib.unquote_plus(x) for x in pair.split('=')] 
