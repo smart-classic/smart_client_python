@@ -3,10 +3,10 @@ tmp = sys.stdout
 sys.stdout=sys.stderr
 from smart import SmartClient
 
-SMART_SERVER_OAUTH = {'consumer_key': 'developer-sandbox@apps.smartplatforms.org', 
+SMART_SERVER_OAUTH = {'consumer_key': 'my-app@apps.smartplatforms.org', 
                       'consumer_secret': 'smartapp-secret'}
 
-SMART_SERVER_PARAMS = {'api_base' :          'http://sandbox-api.smartplatforms.org'}
+SMART_SERVER_PARAMS = {'api_base' :          'http://303.snarked.com:7000'}
 
 
 """An important static var"""

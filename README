@@ -94,166 +94,187 @@ class SmartClient(oauth.OAuthClient)
  |      
  |            content_type:  defaults to "application/x-www-form-urlencoded"
  |  
+ |  records_POST = c(self, *args, **kwargs)
+ |      POST /records/
+ |      
+ |      Create a new medical record from the supplied graph
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#MedicalRecord
+ |  
+ |  records_X_alerts_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/alerts/
+ |      
+ |      Post new Alert for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Alert
+ |  
  |  records_X_allergies_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/allergies/
  |      
- |      GET all allergies for a record
+ |      Get all allergies for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Allergy
+ |  
+ |  records_X_allergies_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/allergies/
+ |      
+ |      Post allergies for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Allergy
  |  
  |  records_X_allergies_X_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/allergies/{allergy_id}
  |      
- |      Get a single allergy
+ |      Get allergies for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Allergy
  |  
- |  records_X_allergies_external_id_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/allergies/external_id/{external_id}
+ |  records_X_demographics_DELETE = c(self, *args, **kwargs)
+ |      DELETE /records/{record_id}/demographics
  |      
- |      Get a single allergy
+ |      Delete demographics for a patient
  |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Allergy
- |  
- |  records_X_allergy_exceptions_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/allergy_exceptions/
- |      
- |      Get all allergy_exceptions
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#AllergyException
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Demographics
  |  
  |  records_X_demographics_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/demographics
  |      
  |      Get all demographics for a patient
  |      
- |      Returns RDF Graph containing:  http://xmlns.com/foaf/0.1/Person
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Demographics
+ |  
+ |  records_X_demographics_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/demographics
+ |      
+ |      Add to demographics for a patient with a newly-supplied graph
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Demographics
+ |  
+ |  records_X_encounters_GET = c(self, *args, **kwargs)
+ |      GET /records/{record_id}/encounters/
+ |      
+ |      Get all encounters for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Encounter
+ |  
+ |  records_X_encounters_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/encounters/
+ |      
+ |      Post encounters for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Encounter
+ |  
+ |  records_X_encounters_X_GET = c(self, *args, **kwargs)
+ |      GET /records/{record_id}/encounters/{encounter_id}
+ |      
+ |      Get encounters for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Encounter
  |  
  |  records_X_fulfillments_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/fulfillments/
  |      
- |      Get all fulfillments in the record.
+ |      Get all fulfillments for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Fulfillment
+ |  
+ |  records_X_fulfillments_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/fulfillments/
+ |      
+ |      Post fulfillments for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Fulfillment
  |  
  |  records_X_fulfillments_X_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/fulfillments/{fulfillment_id}
  |      
- |      Get a single fulfillment
+ |      Get fulfillments for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Fulfillment
- |  
- |  records_X_fulfillments_external_id_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/fulfillments/external_id/{external_id}
- |      
- |      Get a single fulfillment
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Fulfillment
- |  
- |  records_X_lab_result_panels_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/lab_result_panels/
- |      
- |      Get all lab result panels for a given record
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#LabResultPanel
- |  
- |  records_X_lab_result_panels_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/lab_result_panels/{lab_result_panel_id}
- |      
- |      Get a single lab result panel
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#LabResultPanel
  |  
  |  records_X_lab_results_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/lab_results/
  |      
- |      Get all lab results for a given record
+ |      Get all lab results for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#LabResult
+ |  
+ |  records_X_lab_results_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/lab_results/
+ |      
+ |      Post lab results for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#LabResult
  |  
  |  records_X_lab_results_X_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/lab_results/{lab_result_id}
  |      
- |      Get a single lab result
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#LabResult
- |  
- |  records_X_lab_results_filter_loinc_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/lab_results/filter/loinc/{comma_separated_loincs}
- |      
- |      Get all lab results for a given record, filtered by a set of loinc codes
+ |      Get lab results for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#LabResult
  |  
  |  records_X_medications_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/medications/
  |      
- |      Get all medications for a given record
+ |      Get all medications for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Medication
+ |  
+ |  records_X_medications_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/medications/
+ |      
+ |      Post new medication for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Medication
  |  
  |  records_X_medications_X_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/medications/{medication_id}
  |      
- |      Get a single medication
+ |      Get medication for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Medication
- |  
- |  records_X_medications_X_fulfillments_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/medications/{medication_id}/fulfillments/
- |      
- |      Get all fulfillments for a given medication
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Fulfillment
- |  
- |  records_X_medications_external_id_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/medications/external_id/{external_id}
- |      
- |      Get a single medication
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Medication
- |  
- |  records_X_notes_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/notes/
- |      
- |      Get all notes for a given record
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Note
- |  
- |  records_X_notes_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/notes/{note_id}
- |      
- |      Get a single note
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Note
- |  
- |  records_X_notes_external_id_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/notes/external_id/{external_id}
- |      
- |      Get a single note
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Note
  |  
  |  records_X_problems_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/problems/
  |      
- |      Get all problems for a given record
+ |      Get all problems for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Problem
+ |  
+ |  records_X_problems_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/problems/
+ |      
+ |      Post problems for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Problem
  |  
  |  records_X_problems_X_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/problems/{problem_id}
  |      
- |      Get a single problem
+ |      Get problems for a patient
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Problem
  |  
- |  records_X_problems_external_id_X_GET = c(self, *args, **kwargs)
- |      GET /records/{record_id}/problems/external_id/{external_id}
+ |  records_X_vital_signs_GET = c(self, *args, **kwargs)
+ |      GET /records/{record_id}/vital_signs/
  |      
- |      Get a single problem
+ |      Get all vital signs for a patient
  |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Problem
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#VitalSigns
+ |  
+ |  records_X_vital_signs_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/vital_signs/
+ |      
+ |      Post vital signs for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#VitalSigns
+ |  
+ |  records_X_vital_signs_X_GET = c(self, *args, **kwargs)
+ |      GET /records/{record_id}/vital_signs/{vital_signs_id}
+ |      
+ |      Get vital signs for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#VitalSigns
  |  
  |  redirect_url(self, request_token)
  |  
@@ -264,17 +285,10 @@ class SmartClient(oauth.OAuthClient)
  |      "oauth_token_secret" to be used for three-legged OAuth
  |      requests.
  |  
- |  users_X_GET = c(self, *args, **kwargs)
- |      GET /users/{user_id}
- |      
- |      Get a single user by internal ID
- |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#User
- |  
  |  ----------------------------------------------------------------------
  |  Data and other attributes defined here:
  |  
- |  ontology_file = '<?xml version="1.0"?>\n\n<rdf:RDF\n     xml:base="h.....
+ |  ontology_file = '<?xml version="1.0"?>\n\n\n<!DOCTYPE rdf:RDF [\n    ....
  |  
  |  ----------------------------------------------------------------------
  |  Methods inherited from oauth.OAuthClient:
