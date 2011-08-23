@@ -16,8 +16,9 @@ sp = Namespace('http://smartplatforms.org/terms#')
 spcode = Namespace('http://smartplatforms.org/terms/codes/')
 api = Namespace('http://smartplatforms.org/terms/api#')
 foaf = Namespace("http://xmlns.com/foaf/0.1/")
+vcard = Namespace("http://www.w3.org/2006/vcard/ns#")
 
-NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "api":api, "foaf": foaf, "spcode": spcode}
+NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "api":api, "foaf": foaf, "vcard": vcard, "spcode": spcode}
 
 anyuri = URIRef("http://www.w3.org/2001/XMLSchema#anyURI")
 

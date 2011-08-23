@@ -1,4 +1,3 @@
-from query_builder import QueryBuilder
 from util import *
 import string, re
 
@@ -119,10 +118,10 @@ class OWL_Class(OWL_Base):
 
     def find_parent_classes(self):
         parents = filter(lambda c: c.is_simple_subclass, self.subclass_restrictions)
+
         ret = []
         for p in parents:
-            try: assert p.uri != self.uri, "class is its own parent: %s"%p.uri
-            except: continue
+            assert p.uri != self.uri, "class is its own parent: %s"%p.uri
             pclass = self.get_or_create(self.graph, p.uri)
             ret += pclass.parent_classes
             ret.append(pclass)
