@@ -36,7 +36,6 @@ class SMART_Querier(object):
         ret = ret.replace("$construct_triples", q.construct_triples())
         ret = ret.replace("$query_triples", b)        
         ret = ret.replace("$filter_clause", filter_clause)
-        print "QUERY:", ret
         return ret
 
 class QueryBuilder(object):
