@@ -72,6 +72,7 @@ class OWL_Restriction(OWL_Base):
             "min_cardinality": (owl.minCardinality, lambda x: int(x)),
             "max_cardinality": (owl.maxCardinality, lambda x: int(x)),
             "cardinality": (owl.cardinality, lambda x: int(x)),
+            "qcardinality": (owl.qualifiedCardinality, lambda x: int(x)),
             "all_values_from": owl.allValuesFrom,
             }
         
@@ -92,8 +93,10 @@ class OWL_Restriction(OWL_Base):
         # We don't yet deal with arbitrary anonymous constraint expressions
         # like "(drugName only (code only RxNorm_Semantic))"...
         # Just allow predicates to conenct with concrete URI classes.
+        self.sub_restriction_all_values_from = None
         if (type(self.all_values_from) == BNode):
             self.all_values_from = None
+            self.sub_restriction_all_values_from = OWL_Restriction(graph, self.all_values_from)
 
 class OWL_Class(OWL_Base):
     store = {}
@@ -181,6 +184,7 @@ class OWL_Property(OWL_Base):
     @property
     def multiple_cardinality(self):
         return  (self.cardinality and self.cardinality > 1) or \
+            (self.qcardinality and self.qcardinality > 1) or \
             (self.max_cardinality and self.max_cardinality > 1) or \
             (self.max_qcardinality and self.max_qcardinality > 1) or \
             (not (self.cardinality or self.max_cardinality or self.max_qcardinality))
@@ -189,6 +193,8 @@ class OWL_Property(OWL_Base):
     def cardinality_string(self):
         if self.cardinality:
             return str(self.cardinality)
+        if self.qcardinality:
+            return str(self.qcardinality)
         ret = ""
         if self.min_cardinality != None:
             ret += str(self.min_cardinality) + " - "
@@ -259,13 +265,16 @@ class OWL_Property(OWL_Base):
         return (self.max_cardinality or self.cardinality or self.max_qcardinality) != 0
 
     def __init__(self, graph, from_class, uri, restrictions):
-        self.debug = restrictions
+        self.sub_restrictions = []
         self.graph = graph
         self.from_class = from_class
         self.uri = uri
 
         is_first = True
         for r in restrictions:
+            if r.sub_restriction_all_values_from:
+                self.sub_restrictions.append(r.sub_restriction_all_values_from)
+
             self.merge_values_from(r, is_first)
             is_first = False
 
