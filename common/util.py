@@ -17,8 +17,9 @@ spcode = Namespace('http://smartplatforms.org/terms/codes/')
 api = Namespace('http://smartplatforms.org/terms/api#')
 foaf = Namespace("http://xmlns.com/foaf/0.1/")
 vcard = Namespace("http://www.w3.org/2006/vcard/ns#")
+dcterms = Namespace('http://purl.org/dc/terms/')
 
-NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "api":api, "foaf": foaf, "vcard": vcard, "spcode": spcode}
+NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "api":api, "foaf": foaf, "vcard": vcard, "spcode": spcode, "dcterms":dcterms}
 
 anyuri = URIRef("http://www.w3.org/2001/XMLSchema#anyURI")
 
@@ -81,21 +82,5 @@ def rdfO(s):
     return s[2];
 
 default_ns = {}
-default_ns['dc'] = Namespace('http://purl.org/dc/elements/1.1/')
-default_ns['dcterms'] = Namespace('http://purl.org/dc/terms/')
-default_ns['umls'] = Namespace('http://www.nlm.nih.gov/research/umls/')
-default_ns['sp'] = Namespace('http://smartplatforms.org/terms#')
-default_ns['foaf']=Namespace('http://xmlns.com/foaf/0.1/')
-default_ns['rdf'] = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
-default_ns['rdfs'] = Namespace('http://www.w3.org/2000/01/rdf-schema#')
-default_ns['owl'] = Namespace('http://www.w3.org/2002/07/owl#')
-default_ns['api'] = Namespace('http://smartplatforms.org/api/')
-default_ns['rxn'] = Namespace('http://link.informatics.stonybrook.edu/rxnorm/')
-default_ns['rxcui'] = Namespace('http://link.informatics.stonybrook.edu/rxnorm/RXCUI/')
-default_ns['rxaui'] = Namespace('http://link.informatics.stonybrook.edu/rxnorm/RXAUI/')
-default_ns['rxatn'] = Namespace('http://link.informatics.stonybrook.edu/rxnorm/RXATN#')
-default_ns['rxrel'] = Namespace('http://link.informatics.stonybrook.edu/rxnorm/REL#')
-default_ns['snomed-ct'] = Namespace('http://www.ihtsdo.org/snomed-ct/')
-default_ns['ccr'] = Namespace('urn:astm-org:CCR')
-default_ns['v'] = Namespace('http://www.w3.org/2006/vcard/ns#')
-default_ns['spcode'] = spcode
+for k,v in NS.iteritems():
+      default_ns[k] = v
