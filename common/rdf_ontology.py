@@ -383,6 +383,8 @@ class SMART_Class(OWL_Class):
 
     @property
     def is_statement(self):
+        if self.uri==sp.Statement: return True
+
         parent_class_uris = [c.uri for c in self.parents]
         return URIRef("http://smartplatforms.org/terms#Statement") in parent_class_uris
 
