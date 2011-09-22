@@ -72,6 +72,7 @@ def make_ops(t):
 
 print header
 api_types = sorted(api_types, key=lambda x: x.name)
+
 for t in api_types:
     data_properties = make_dps(t)
     object_properties = make_ops(t)
