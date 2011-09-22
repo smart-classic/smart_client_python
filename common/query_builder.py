@@ -111,14 +111,14 @@ class QueryBuilder(object):
         for prop in root_type.object_properties:
                 oid = self.get_identifier("?"+prop.uri.n3(), "object")
 
-                if str(prop.to_class.uri) == "http://smartplatforms.org/terms#MedicalRecord":
-                    continue
 
                 newdepth = depth
                 if prop.to_class.is_statement :
                     newdepth += 1
+   
+                if ( (depth == 0 or not prop.to_class.is_statement)  and 
+                      str(prop.to_class.uri) != "http://smartplatforms.org/terms#MedicalRecord"):
 
-                if not prop.to_class.is_statement or depth == 0: # for regular data, keep generating the query
                     ret += self.optional_linked_type(linked_type=prop.to_class, 
                                              root_name=root_name,
                                              predicate=prop.uri.n3(),
