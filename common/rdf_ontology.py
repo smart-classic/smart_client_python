@@ -7,15 +7,20 @@ class OWL_Base(object):
     attributes = {}
 
     data_property_map = None
-
+    object_property_inverses = None
     def guess_name(self):
         return re.split("[#\/]", str(self.uri))[-1]
 
     @classmethod 
-    def find_all_data_property_map(cls, graph):        
+    def find_property_maps(cls, graph):        
         OWL_Base.data_property_map = {}
         for p in graph.triples((None, rdf.type, owl.DatatypeProperty)):
             OWL_Base.data_property_map[p[0]] = True
+            
+        OWL_Base.object_property_inverses = {}
+
+        for p in graph.triples((None, owl.inverseOf, None)):
+            OWL_Base.object_property_inverses[p[0]] = p[2]
 
     def get_annotation(self, p):
         try:
@@ -47,7 +52,7 @@ class OWL_Base(object):
             except: setattr(self, pn, None)
 
         if self.__class__.data_property_map == None:
-            OWL_Base.find_all_data_property_map(graph)
+            OWL_Base.find_property_maps(graph)
 
     @classmethod
     def get_or_create(cls, graph, node, callback=lambda x: x, *args, **kwargs):
@@ -361,7 +366,9 @@ class OWL_Property(OWL_Base):
 class OWL_ObjectProperty(OWL_Property):
     def __init__(self, graph, from_class, uri, restrictions):
         self.__to_class = None
+
         super(OWL_ObjectProperty, self).__init__(graph, from_class, uri, restrictions)
+        
 
     @property
     def to_class(self):
