@@ -54,7 +54,11 @@ def make_generic_call(call):
         content_type = kwargs.get('content_type', None)
         f = getattr(self, str(call.method).lower())          
         ret =  f(url=url, data=data, content_type=content_type)
-        return self.data_mapper(ret)
+        try:
+            return self.data_mapper(ret)
+        except:
+            # Return the raw data if it cannot be parsed in an RDF graph object
+            return ret
     return c
 
 def augment(client_class):
