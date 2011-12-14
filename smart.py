@@ -81,9 +81,14 @@ class SmartClient(OAuthClient):
         conn.request(http_request.method, path, data, header)
         r = conn.getresponse()
         if (r.status != 200): raise Exception( "SMART API request found unexpected status: %s"%r.status)
+        ct = r.getheader("Content-Type")
+        try:
+            ct = ct.split(';')[0]
+        except:
+            pass
         data = r.read()
         conn.close()
-        return data
+        return ct, data
             
     def get(self, url, data=None, content_type=None):
             """Issue an HTTP GET request to the specified URL and
