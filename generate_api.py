@@ -55,11 +55,11 @@ def make_generic_call(call):
         f = getattr(self, str(call.method).lower())          
         ct, ret =  f(url=url, data=data, content_type=content_type)
         try:
-            if ct == "application/rdf+xml": return self.data_mapper(ret)
-            else: return ret
+            if ct == "application/rdf+xml": return ct, self.data_mapper(ret)
+            else: return ct, ret
         except:
             # Return the raw data if it cannot be parsed in an RDF graph object
-            return ret
+            return ct, ret
     return c
 
 def augment(client_class):
