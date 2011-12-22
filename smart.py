@@ -103,9 +103,8 @@ class SmartClient(OAuthClient):
             req = None
             if isinstance(data, dict): data = urllib.urlencode(data)
             
-            req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)
-            ct = "text/plain" # add content type decoding here!!!            
-            return ct, self._access_resource(req)
+            req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)       
+            return self._access_resource(req)
 
     def post(self, url, data="", content_type="application/rdf+xml"):
             """Issue an HTTP POST request to the specified URL and
