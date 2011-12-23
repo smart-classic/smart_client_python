@@ -7,6 +7,12 @@ import common.rdf_ontology as rdf_ontology
 
 pFormat = "{.*?}"
 
+class SMARTResponse:
+    def __init__ (self, body, contentType = "text/plain", graph = None):
+        self.body = body
+        self.contentType = contentType
+        self.graph = graph
+
 def parameter_optional(call, p):
     mark = str(call.path).find("?")
     point = str(call.path).find(p)
@@ -54,12 +60,13 @@ def make_generic_call(call):
         content_type = kwargs.get('content_type', None)
         f = getattr(self, str(call.method).lower())          
         ct, ret =  f(url=url, data=data, content_type=content_type)
+        
         try:
-            if ct == "application/rdf+xml": return ct, self.data_mapper(ret)
+            if ct == "application/rdf+xml": return SMARTResponse (ret, ct, self.data_mapper(ret))
         except:
             pass
-        # Return the raw data if it cannot be parsed in an RDF graph object
-        return ct, ret
+
+        return SMARTResponse (ret, ct)
     return c
 
 def augment(client_class):
