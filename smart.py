@@ -50,7 +50,7 @@ class SmartClient(OAuthClient):
         self.stylesheet = None
         
         if (not common.rdf_ontology.parsed):
-            ct, self.__class__.ontology_file = self.get("/ontology")
+            self.__class__.ontology_file = self.get("/ontology").body
             common.rdf_ontology.parse_ontology(SmartClient.ontology_file)
             generate_api.augment(self.__class__)
             
