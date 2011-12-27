@@ -59,14 +59,14 @@ def make_generic_call(call):
         data = kwargs.get('data', None) 
         content_type = kwargs.get('content_type', None)
         f = getattr(self, str(call.method).lower())          
-        ct, ret =  f(url=url, data=data, content_type=content_type)
-        
+        res =  f(url=url, data=data, content_type=content_type)
+        ct = res.contentType
         try:
-            if ct == "application/rdf+xml": return SMARTResponse (ret, ct, self.data_mapper(ret))
+            if ct == "application/rdf+xml": return SMARTResponse (res.body, ct, self.data_mapper(res.body))
         except:
             pass
 
-        return SMARTResponse (ret, ct)
+        return SMARTResponse (res.body, ct)
     return c
 
 def augment(client_class):
