@@ -427,7 +427,7 @@ class SMART_API_Call(OWL_Base):
 parsed = False
                 
 def parse_ontology(f):
-    global api_calls 
+    global api_calls
     global api_types
     global parsed
     
@@ -438,6 +438,22 @@ def parse_ontology(f):
     api_calls = SMART_API_Call.store.values()
     api_types = filter(lambda t: isinstance(t, SMART_Class) and isinstance(t.uri, URIRef), SMART_Class.store.values())
     parsed = True
+    
+def get_api_calls ():
+    calls = {}
+    
+    for t in api_calls:
+
+        target = str(t.target)
+        method = str(t.method)
+        path = str(t.path)
+        category = str(t.category)
+
+        if method == "GET" and category == "record_items":
+            if target not in calls.keys():
+                calls[target] = path
+            
+    return calls
 
 api_calls = None  
 api_types = None 
