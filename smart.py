@@ -15,7 +15,7 @@ class SmartClient(OAuthClient):
     """Establishes OAuth communication with a SMArt Container, and
     provides access to the SMArt REST API"""  
 
-    def __init__(self, app_id, server_params, consumer_token, resource_token=None):
+    def __init__(self, app_id, server_params, consumer_token, resource_token=None, ontology_loc=None):
         """Constructor for SmartClient. 
 
             app_id:  ID by which the app is known to the SMArt Container
@@ -50,6 +50,11 @@ class SmartClient(OAuthClient):
         self.stylesheet = None
         
         if (not common.rdf_ontology.parsed):
+            if ontology_loc:
+                f = open(ontology_loc, 'r')
+                self.__class__.ontology_file = f.read()
+                f.close()
+            else:
             self.__class__.ontology_file = self.get("/ontology").body
             common.rdf_ontology.parse_ontology(SmartClient.ontology_file)
             generate_api.augment(self.__class__)
