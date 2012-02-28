@@ -18,10 +18,11 @@ api = Namespace('http://smartplatforms.org/terms/api#')
 foaf = Namespace("http://xmlns.com/foaf/0.1/")
 vcard = Namespace("http://www.w3.org/2006/vcard/ns#")
 dcterms = Namespace('http://purl.org/dc/terms/')
+xsd = Namespace('http://www.w3.org/2001/XMLSchema#')
 
-NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "api":api, "foaf": foaf, "vcard": vcard, "spcode": spcode, "dcterms":dcterms}
+NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "xsd":xsd , "api":api, "foaf": foaf, "vcard": vcard, "spcode": spcode, "dcterms":dcterms}
 
-anyuri = URIRef("http://www.w3.org/2001/XMLSchema#anyURI")
+anyuri = URIRef(NS['xsd']['anyURI'])
 
 # metaclass to allow class-based dictionary look-up
 class LookupType(type):
