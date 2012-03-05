@@ -57,7 +57,8 @@ class SmartClient(OAuthClient):
             else:
                 self.__class__.ontology_file = self.get("/ontology").body
             common.rdf_ontology.parse_ontology(SmartClient.ontology_file)
-            generate_api.augment(self.__class__)
+            
+        generate_api.augment(self.__class__)
             
 
     def _access_resource(self, http_request, oauth_parameters = {}, with_content_type=False):
