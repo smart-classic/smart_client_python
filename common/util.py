@@ -32,13 +32,13 @@ class LookupType(type):
 def serialize_rdf(model):
     return model.serialize(format="pretty-xml")
 
-def parse_rdf(string, model=None, context="none"):
+def parse_rdf(string, model=None):
     if model == None:
         model = bound_graph() 
     try:
-        model.parse(sIO(string))
+        model.default_context.parse(data=string)
     except:
-        model.parse(sIO(string), format="n3")
+        model.default_context.parse(data=string, format="n3")
 
     return model
 
@@ -58,9 +58,6 @@ def get_property_list(model, s, p):
     return [x[2] for x in r]
 
 def remap_node(model, old_node, new_node=None):
-    if (new_node == None):
-        new_node = URIRef("http://reified_node_" + str(old_node))
-
     for s in list(model.triples((old_node, None, None))):
         model.remove(s)
         s = (new_node, s[1], s[2])
@@ -70,11 +67,12 @@ def remap_node(model, old_node, new_node=None):
         model.remove(s)
         s = (s[0], s[1], new_node)
         model.add(s)
+
     return
 
 
 def bound_graph():
-    g = rdflib.Graph()
+    g = rdflib.ConjunctiveGraph()
     for p,v in default_ns.iteritems():
         g.bind(p,v)
     return g
