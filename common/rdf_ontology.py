@@ -211,6 +211,7 @@ class OWL_Restriction(OWL_Class):
             "cardinality": (owl.cardinality, lambda x: int(x)),
             "qcardinality": (owl.qualifiedCardinality, lambda x: int(x)),
             "all_values_from": owl.allValuesFrom,
+            "has_value": owl.hasValue
             }
         
     def __init__(self, graph, uri, using_class=OWL_Class):
