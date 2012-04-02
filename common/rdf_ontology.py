@@ -349,6 +349,16 @@ class OWL_Property(OWL_Base):
                 ret.append(OWL_Annotation(self.graph, self, a[2], a[3]))
         except KeyError: 
             pass
+
+        try:
+            for p in self.from_class.parents:
+                akey = p.uri.n3()+"."+ self.uri.n3()
+                about_me = self.__class__.property_annotations[akey]
+                for a in about_me:
+                    ret.append(OWL_Annotation(self.graph, self, a[2], a[3]))
+        except KeyError:
+            pass
+
         return ret
 
     @property
