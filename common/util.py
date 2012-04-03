@@ -35,7 +35,11 @@ def serialize_rdf(model):
 def parse_rdf(string, model=None, context="none"):
     if model == None:
         model = bound_graph() 
-    model.parse(sIO(string))
+    try:
+        model.parse(sIO(string))
+    except:
+        model.parse(sIO(string), format="n3")
+
     return model
 
 def get_property(model, s, p, raw_statement=False):
