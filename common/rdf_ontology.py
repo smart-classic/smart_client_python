@@ -341,25 +341,25 @@ class OWL_Property(OWL_Base):
         if OWL_Property.property_annotations == None:
             OWL_Property.find_all_annotations(self.graph)
 
-        ret = []
+        ret = {} 
         try:
             akey = self.from_class.uri.n3()+"."+ self.uri.n3()
             about_me = self.__class__.property_annotations[akey]
             for a in about_me:
-                ret.append(OWL_Annotation(self.graph, self, a[2], a[3]))
+                ret[str(a[2])+str(a[3])] = OWL_Annotation(self.graph, self, a[2], a[3])
         except KeyError: 
             pass
 
-        try:
-            for p in self.from_class.parents:
+        for p in self.from_class.parents:
+            try:
                 akey = p.uri.n3()+"."+ self.uri.n3()
                 about_me = self.__class__.property_annotations[akey]
                 for a in about_me:
-                    ret.append(OWL_Annotation(self.graph, self, a[2], a[3]))
-        except KeyError:
-            pass
-
-        return ret
+                    ret[str(a[2])+str(a[3])] = OWL_Annotation(self.graph, self, a[2], a[3])
+            except KeyError:
+                pass
+    
+        return ret.values()
 
     @property
     def has_nonzero_cardinality(self):
