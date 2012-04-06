@@ -2,16 +2,17 @@
 Generate all API methods from SMArt OWL ontology
 """
 
-import os, re
+import os, re, json
 import common.rdf_ontology as rdf_ontology
 
 pFormat = "{.*?}"
 
 class SMARTResponse:
-    def __init__ (self, body, contentType = "text/plain", graph = None):
+    def __init__ (self, body, contentType = "text/plain", graph = None, json = None):
         self.body = body
         self.contentType = contentType
         self.graph = graph
+        self.json = json
 
 def parameter_optional(call, p):
     mark = str(call.path).find("?")
@@ -61,12 +62,19 @@ def make_generic_call(call):
         f = getattr(self, str(call.method).lower())          
         res =  f(url=url, data=data, content_type=content_type)
         ct = res.contentType
+        
         try:
-            if ct == "application/rdf+xml": return SMARTResponse (res.body, ct, self.data_mapper(res.body))
+            return SMARTResponse (res.body, ct, self.data_mapper(res.body), None)
         except:
             pass
-
+            
+        try:
+            return SMARTResponse (res.body, ct, None, json.loads(res.body))
+        except:
+            pass
+            
         return SMARTResponse (res.body, ct)
+                
     return c
 
 def augment(client_class):
