@@ -6,7 +6,6 @@ joshua.mandel@childrens.harvard.edu
 
 import urllib, rdflib
 #import RDF
-#import libxml2, libxslt
 import datetime, time
 
 from common import rdf_ontology
@@ -154,15 +153,6 @@ def fill_external_id(g, fill_uri):
         t = time.mktime(datetime.datetime.strptime(s.object.literal_value['string'], 
                                                    "%Y-%m-%dT%H:%M:%SZ").timetuple())
         return str(int(t))
-
-def xslt_ccr_to_rdf(source, stylesheet):
-    sourceDOM = libxml2.parseDoc(source)
-    ssDOM = libxml2.parseFile(stylesheet)
-    return apply_xslt(sourceDOM, ssDOM)
-
-def apply_xslt(sourceDOM, stylesheetDOM):
-    style = libxslt.parseStylesheetDoc(stylesheetDOM)
-    return style.applyStylesheet(sourceDOM, None).serialize()
     
 def anonymize_smart_rdf (rdfres):
     for t in rdf_ontology.api_types:
