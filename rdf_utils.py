@@ -48,7 +48,7 @@ def bind_ns(serializer, ns=NS):
         v = ns[k]
         serializer.set_namespace(k, RDF.Uri(v._prefix))
 
-def parse_rdf(string, model=None, context="none"):
+def parse_rdf(string, model=None):
     if model == None:
         model = RDF.Model() 
     parser = RDF.Parser()
