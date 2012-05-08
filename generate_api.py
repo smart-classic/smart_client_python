@@ -7,7 +7,7 @@ import common.rdf_ontology as rdf_ontology
 
 pFormat = "{.*?}"
 
-class SMARTResponse:
+class SmartResponse:
     def __init__ (self, body, contentType = "text/plain", graph = None, json = None):
         self.body = body
         self.contentType = contentType
@@ -64,16 +64,16 @@ def make_generic_call(call):
         ct = res.contentType
         
         try:
-            return SMARTResponse (res.body, ct, self.data_mapper(res.body), None)
+            return SmartResponse (res.body, ct, self.data_mapper(res.body), None)
         except:
             pass
             
         try:
-            return SMARTResponse (res.body, ct, None, json.loads(res.body))
+            return SmartResponse (res.body, ct, None, json.loads(res.body))
         except:
             pass
             
-        return SMARTResponse (res.body, ct)
+        return SmartResponse (res.body, ct)
                 
     return c
 
