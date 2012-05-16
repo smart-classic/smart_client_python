@@ -20,7 +20,7 @@ vcard = Namespace("http://www.w3.org/2006/vcard/ns#")
 dcterms = Namespace('http://purl.org/dc/terms/')
 xsd = Namespace('http://www.w3.org/2001/XMLSchema#')
 
-NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "xsd":xsd , "api":api, "foaf": foaf, "vcard": vcard, "spcode": spcode, "dcterms":dcterms}
+NS = {"sp":sp, "rdf":rdf, "rdfs":rdfs, "owl":owl, "xsd":xsd , "api":api, "foaf": foaf, "v": vcard, "spcode": spcode, "dcterms":dcterms}
 
 anyuri = URIRef(NS['xsd']['anyURI'])
 
