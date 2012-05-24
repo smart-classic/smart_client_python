@@ -8,8 +8,8 @@ from oauth import *
 import time
 import generate_api
 from generate_api import SmartResponse
-import common.rdf_ontology
-import common.util
+import common.rdf_tools.rdf_ontology
+import common.rdf_tools.util
 
 class SmartClient(OAuthClient):
     """Establishes OAuth communication with a SMArt Container, and
@@ -49,14 +49,14 @@ class SmartClient(OAuthClient):
         self.app_id = app_id
         self.stylesheet = None
         
-        if (not common.rdf_ontology.parsed):
+        if (not common.rdf_tools.rdf_ontology.parsed):
             if ontology_loc:
                 f = open(ontology_loc, 'r')
                 self.__class__.ontology_file = f.read()
                 f.close()
             else:
                 self.__class__.ontology_file = self.get("/ontology").body
-            common.rdf_ontology.parse_ontology(SmartClient.ontology_file)
+            common.rdf_tools.rdf_ontology.parse_ontology(SmartClient.ontology_file)
             
         generate_api.augment(self.__class__)
             
@@ -203,4 +203,4 @@ class SmartClient(OAuthClient):
     def data_mapper(self, data):
         """Hook to parse the results of OAuth requests into a
         query-able RDF graph"""
-        return common.util.parse_rdf(data)
+        return common.rdf_tools.util.parse_rdf(data)

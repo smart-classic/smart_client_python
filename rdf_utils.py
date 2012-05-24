@@ -8,7 +8,7 @@ import urllib, rdflib
 #import RDF
 import datetime, time
 
-from common import rdf_ontology
+from common.rdf_tools import rdf_ontology
 
 NS = {}
 #NS['dc'] = RDF.NS('http://purl.org/dc/elements/1.1/')
