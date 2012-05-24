@@ -7,7 +7,7 @@ import httplib
 from oauth import *
 import time
 import generate_api
-from generate_api import SMARTResponse
+from generate_api import SmartResponse
 import common.rdf_ontology
 import common.util
 
@@ -112,7 +112,7 @@ class SmartClient(OAuthClient):
             
             req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)       
             ct, ret = self._access_resource(req)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
 
     def post(self, url, data="", content_type="application/rdf+xml"):
             """Issue an HTTP POST request to the specified URL and
@@ -124,7 +124,7 @@ class SmartClient(OAuthClient):
             """
             req = HTTPRequest('POST', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             ct, ret = self._access_resource(req,with_content_type=True)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
         
     def put(self, url, data="", content_type="application/rdf+xml"):
             """Issue an HTTP PUT request to the specified URL and
@@ -136,7 +136,7 @@ class SmartClient(OAuthClient):
             """
             req = HTTPRequest('PUT', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             ct, ret = self._access_resource(req,with_content_type=True)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
 
     def delete(self, url, data=None, content_type=None):
             """Issue an HTTP DELETE request to the specified URL and
@@ -144,7 +144,7 @@ class SmartClient(OAuthClient):
             """
             req = HTTPRequest('DELETE', '%s%s'%(self.baseURL, url), data=data)
             ct, ret = self._access_resource(req)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
 
     def update_token(self, resource_token):
         """ Sets the session token for subsequent three-legged OAuth requests.
