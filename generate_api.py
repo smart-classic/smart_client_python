@@ -3,42 +3,24 @@ Generate all API methods from SMArt OWL ontology
 """
 
 import os, re, json
+import common
 import common.rdf_tools.rdf_ontology as rdf_ontology
 
 pFormat = "{.*?}"
 
 class SmartResponse:
-    def __init__ (self, body, contentType = "text/plain", graph = None, json = None):
+    def __init__ (self, resp, body):
+        self.response = resp
         self.body = body
-        self.contentType = contentType
-        self.graph = graph
-        self.json = json
 
-def parameter_optional(call, p):
-    mark = str(call.path).find("?")
-    point = str(call.path).find(p)
-    return -1 < mark < point
-
-def fill_url_template(call, *args, **kwargs):
-    url =  str(call.path)
-    url = url.split("?")[0]
-
-    # Look for each param in kwargs.  
-    for p in params(call):
-        try:  
-            v = kwargs[p]
-            url = url.replace("{%s}"%p, v)
-        except KeyError as e:
-            # If not found:
-            #    1.  Try to find it as a direct attribute of the SmartClient
-            try: v = getattr(kwargs['_client'], p)
-            except: 
-                #    2.  See if it's optional (and thus can be skipped)
-                if parameter_optional(call,p):
-                    v = ""
-                else: raise e
-        url = url.replace("{%s}"%p, v)
-    return url
+        try:
+            self.graph =  common.rdf_tools.util.parse_rdf(body)
+        except:
+            self.graph = None
+        try:
+            self.json = json.loads(body)
+        except:
+            self.json = None
 
 def call_name(call):
     ret = str(call.path)
@@ -55,35 +37,19 @@ def params(call):
 
 def make_generic_call(call):
     def c(self, *args, **kwargs):
-        kwargs['_client'] = self
-        url = fill_url_template(call, **kwargs)
-        data = kwargs.get('data', None) 
-        content_type = kwargs.get('content_type', None)
+        url =  str(call.path)
         f = getattr(self, str(call.method).lower())          
-        res =  f(url=url, data=data, content_type=content_type)
-        ct = res.contentType
-        
-        try:
-            return SmartResponse (res.body, ct, self.data_mapper(res.body), None)
-        except:
-            pass
-            
-        try:
-            return SmartResponse (res.body, ct, None, json.loads(res.body))
-        except:
-            pass
-            
-        return SmartResponse (res.body, ct)
-                
+        resp, body =  f(url, *args, **kwargs)
+        return SmartResponse(resp, body)
     return c
 
 def augment(client_class):
     for c in rdf_ontology.api_calls:
         call = make_generic_call(c)
+        setattr(client_class, call_name(c), call)
         call.__doc__ = """%s %s
 
 %s
 
 Returns RDF Graph containing:  %s
      """%(c.method, c.path, c.description, c.target)
-        setattr(client_class, call_name(c), call)
