@@ -1,19 +1,16 @@
 import sys
 tmp = sys.stdout
 sys.stdout=sys.stderr
-from smart import SmartClient
+from client import SMARTClient
 
-SMART_SERVER_OAUTH = {'consumer_key': 'my-app@apps.smartplatforms.org', 
+CONSUMER_TOKENS = {'consumer_key': 'my-app@apps.smartplatforms.org', 
                       'consumer_secret': 'smartapp-secret'}
 
-SMART_SERVER_PARAMS = {'api_base' :          'http://303.snarked.com:7000'}
+api_base = 'http://localhost:7000'
 
 
 """An important static var"""
-s = SmartClient(SMART_SERVER_OAUTH['consumer_key'], 
-                       SMART_SERVER_PARAMS, 
-                       SMART_SERVER_OAUTH)
-
+s = SMARTClient(api_base, CONSUMER_TOKENS)
 
 import pydoc
 t = pydoc.TextDoc()
@@ -21,9 +18,9 @@ t = pydoc.TextDoc()
 # TextDoc default behavior wrecks havoc with markdown interpretation.
 # So strip out the " |" line beginnings...
 sys.stdout = tmp
-d = t.docclass(SmartClient)
+d = t.docclass(SMARTClient)
 d = pydoc.plain(d)
-print """SMArt Python Client Library
+print """SMART Python Client Library
 
 To generate this README:
 

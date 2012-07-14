@@ -1,4 +1,4 @@
-SMArt Python Client Library
+SMART Python Client Library
 
 To generate this README:
 
@@ -7,92 +7,90 @@ To generate this README:
 ---
 
 
-class SmartClient(oauth.OAuthClient)
- |  Establishes OAuth communication with a SMArt Container, and
- |  provides access to the SMArt REST API
+class SMARTClient(oauth2.Client)
+ |  Establishes OAuth communication with an SMART Container, and provides access to the API.
  |  
  |  Method resolution order:
- |      SmartClient
- |      oauth.OAuthClient
+ |      SMARTClient
+ |      oauth2.Client
+ |      oauth2.httplib2.Http
  |      __builtin__.object
  |  
  |  Methods defined here:
  |  
- |  __init__(self, app_id, server_params, consumer_token, resource_token=None)
- |      Constructor for SmartClient. 
+ |  __init__(self, api_base, consumer_params, resource_token=None, **state_vars)
+ |  
+ |  absolute_uri(self, uri)
+ |  
+ |  accounts_X_apps_X_preferences_DELETE = c(self, *args, **kwargs)
+ |      DELETE /accounts/{user_id}/apps/{smart_app_id}/preferences
  |      
- |      app_id:  ID by which the app is known to the SMArt Container
+ |      Delete user preferences for an app
  |      
- |      server_params: Hash containing an "api_base" key pointing
- |      to the SMArt Container's base URL.
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#UserPreferences
+ |  
+ |  accounts_X_apps_X_preferences_GET = c(self, *args, **kwargs)
+ |      GET /accounts/{user_id}/apps/{smart_app_id}/preferences
  |      
- |          e.g. {"api_base" : "http://sandbox-api.smartplatforms.org"}
+ |      Get user preferences for an app
  |      
- |      consumer_token: Hash containing a "consumer_key" and
- |      "consumer_secret" to be used for two- and three-legged
- |      OAuth requests.
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#UserPreferences
+ |  
+ |  accounts_X_apps_X_preferences_PUT = c(self, *args, **kwargs)
+ |      PUT /accounts/{user_id}/apps/{smart_app_id}/preferences
  |      
- |      resource_token (optional): Hash containing session
- |      "oauth_token" and "oauth_token_secret" to be used for
- |      three-legged OAuth requests.
+ |      Set new user preferences for an app
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#UserPreferences
+ |  
+ |  apps_X_manifest_GET = c(self, *args, **kwargs)
+ |      GET /apps/{descriptor}/manifest
+ |      
+ |      Returns a JSON SMART UI app manifest for the app matching {descriptor}, or 404.  Note that {descriptor} can be an app ID like "got-statins@apps.smartplatforms.org" or an intent string like "view_medications".
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#AppManifest
+ |  
+ |  apps_manifests_GET = c(self, *args, **kwargs)
+ |      GET /apps/manifests/
+ |      
+ |      Returns a JSON list of all SMART UI app manifests installed on the container.
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#AppManifest
  |  
  |  capabilities_GET = c(self, *args, **kwargs)
  |      GET /capabilities/
  |      
- |      Get a list of all auxiliiary container capabilities
+ |      Get capabilities for a container
  |      
- |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Container
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Capabilities
  |  
- |  data_mapper(self, data)
- |      Hook to parse the results of OAuth requests into a
- |      query-able RDF graph
+ |  delete(self, uri, headers={}, **uri_params)
+ |      Make an OAuth-signed DELETE request to SMART Server.
  |  
- |  delete(self, url, data=None, content_type=None)
- |      Issue an HTTP DELETE request to the specified URL and
- |      return the response body.
+ |  exchange_token(self, verifier)
+ |      Exchange the client's current token (should be a request token) for an access token.
  |  
- |  exchange(self, request_token, verifier=None)
+ |  fetch_request_token(self, params={})
+ |      Get a request token from the server.
  |  
- |  get(self, url, data=None, content_type=None)
- |      Issue an HTTP GET request to the specified URL and
- |      return the response body.
- |      
- |            data: a dictionary of data to be url-encoded, or a
- |            string containing the HTTP request message body.
- |      
- |            content_type:  defaults to "application/x-www-form-urlencoded"
+ |  get(self, uri, body={}, headers={'Authorization': u'OAuth realm="http://localhost:7000", oauth_bod...oauth_signature="TRgp1xeqxufQBAsUGBK0ow2qZCE%3D"'}, **uri_params)
+ |      Make an OAuth-signed GET request to SMART Server.
  |  
- |  get_request_token(self, params={})
- |  
- |  loop_over_records(self)
- |      Iterator allowing background apps to loop through each
- |      patient record in the SMArt container, e.g. to perform
- |      reporting or analytics.  For each patient record in the
- |      container, sets access tokens on the SmartClient object and
- |      yields the new record_id.
+ |  get_surl_credentials(self)
+ |      Produces a token and secret for signing URLs.
  |  
  |  ontology_GET = c(self, *args, **kwargs)
  |      GET /ontology
  |      
- |      Retrieve ontology used by a SMArt container
+ |      Get the ontology used by a SMART container
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Ontology
  |  
- |  post(self, url, data='', content_type='application/rdf+xml')
- |      Issue an HTTP POST request to the specified URL and
- |      return the response body.
- |      
- |            data: string containing HTTP request message body.
- |      
- |            content_type:  defaults to "application/x-www-form-urlencoded"
+ |  post(self, uri, body='', headers={}, content_type=None, **uri_params)
+ |      Make an OAuth-signed POST request to SMART Server.
  |  
- |  put(self, url, data='', content_type='application/rdf+xml')
- |      Issue an HTTP PUT request to the specified URL and
- |      return the response body.
- |      
- |            data: string containing HTTP request message body.
- |      
- |            content_type:  defaults to "application/x-www-form-urlencoded"
+ |  put(self, uri, body='', headers={}, content_type=None, **uri_params)
+ |      Make an OAuth-signed PUT request to SMART Server.
  |  
  |  records_POST = c(self, *args, **kwargs)
  |      POST /records/
@@ -192,6 +190,27 @@ class SmartClient(oauth.OAuthClient)
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Fulfillment
  |  
+ |  records_X_immunizations_GET = c(self, *args, **kwargs)
+ |      GET /records/{record_id}/immunizations/
+ |      
+ |      Get all immunizations for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Immunization
+ |  
+ |  records_X_immunizations_POST = c(self, *args, **kwargs)
+ |      POST /records/{record_id}/immunizations/
+ |      
+ |      Post one immunization for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Immunization
+ |  
+ |  records_X_immunizations_X_GET = c(self, *args, **kwargs)
+ |      GET /records/{record_id}/immunizations/{immunization_id}
+ |      
+ |      Get one immunization for a patient
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Immunization
+ |  
  |  records_X_lab_results_GET = c(self, *args, **kwargs)
  |      GET /records/{record_id}/lab_results/
  |      
@@ -276,14 +295,37 @@ class SmartClient(oauth.OAuthClient)
  |      
  |      Returns RDF Graph containing:  http://smartplatforms.org/terms#VitalSigns
  |  
- |  redirect_url(self, request_token)
+ |  records_search_GET = c(self, *args, **kwargs)
+ |      GET /records/search?given_name={given_name}&family_name={family_name}&zipcode={zipcode}&birthday={birthday}&gender={gender}&medical_record_number={medical_record_number}
+ |      
+ |      Get an RDF graph of sp:Demographics elements for all patients that match the query.  Matching treats family_name and given_name as the *beginning* of a name.  For instance given_name='J' matches /^J/i and thus matchs 'Josh'. Birthday is an ISO8601 string like "2008-03-21"; gender is "male" or "female".  Gender, birthday, zipcode, and medical_record_number must match exactly.
+ |              
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#Demographics
+ |  
+ |  request(self, uri, uri_params, *args, **kwargs)
  |  
  |  update_token(self, resource_token)
- |      Sets the session token for subsequent three-legged OAuth requests.
+ |      Update the resource token used by the client to sign requests.
+ |  
+ |  users_X_GET = c(self, *args, **kwargs)
+ |      GET /users/{user_id}
  |      
- |      resource_token: Hash containing session "oauth_token" and
- |      "oauth_token_secret" to be used for three-legged OAuth
- |      requests.
+ |      Get a single user by internal ID
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#User
+ |  
+ |  users_search_GET = c(self, *args, **kwargs)
+ |      GET /users/search?given_name={given_name}&family_name={family_name}
+ |      
+ |      Get users by name (or all users if blank)
+ |      
+ |      Returns RDF Graph containing:  http://smartplatforms.org/terms#User
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |  
+ |  auth_redirect_url
  |  
  |  ----------------------------------------------------------------------
  |  Data and other attributes defined here:
@@ -291,37 +333,31 @@ class SmartClient(oauth.OAuthClient)
  |  ontology_file = '<?xml version="1.0"?>\n\n\n<!DOCTYPE rdf:RDF [\n    ....
  |  
  |  ----------------------------------------------------------------------
- |  Methods inherited from oauth.OAuthClient:
+ |  Methods inherited from oauth2.Client:
  |  
- |  access_resource(self, http_request, with_content_type=False)
- |      host is a dictionary containing protocol, hostname, and port
- |      if port is not specified, it is assumed to be 80 for http, and 443 for https
- |  
- |  fetch_access_token(self, request_token, verifier=None)
- |  
- |  fetch_request_token(self)
- |  
- |  get_authorize_url(self, request_token)
- |  
- |  get_consumer(self)
- |  
- |  get_token(self)
- |  
- |  set_token(self, token)
+ |  set_signature_method(self, method)
  |  
  |  ----------------------------------------------------------------------
- |  Data descriptors inherited from oauth.OAuthClient:
+ |  Methods inherited from oauth2.httplib2.Http:
+ |  
+ |  add_certificate(self, key, cert, domain)
+ |      Add a key and cert that will be used
+ |      any time a request requires authentication.
+ |  
+ |  add_credentials(self, name, password, domain='')
+ |      Add a name and password that will be used
+ |      any time a request requires authentication.
+ |  
+ |  clear_credentials(self)
+ |      Remove all the names and passwords
+ |      that are used for authentication
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors inherited from oauth2.httplib2.Http:
  |  
  |  __dict__
  |      dictionary for instance variables (if defined)
  |  
  |  __weakref__
  |      list of weak references to the object (if defined)
- |  
- |  ----------------------------------------------------------------------
- |  Data and other attributes inherited from oauth.OAuthClient:
- |  
- |  consumer = None
- |  
- |  token = None
 
