@@ -44,7 +44,7 @@ class SMARTClient(oauth.Client):
             augment(self.__class__)
 
         if self.api_base not in KNOWN_SERVERS:
-            resp, content = self.get('/manifest.json')
+            resp, content = self.get('/manifest')
             assert resp.status == 200, "Failed to fetch container container manifest"
             KNOWN_SERVERS[self.api_base] = json.loads(content)
 
@@ -99,7 +99,7 @@ class SMARTClient(oauth.Client):
         """ Get a request token from the server. """
         if self.token:
             raise SMARTClientError("Client already has a resource token.")
-        resp, content = self.post(self.container_manifest['request_token_url'], body=params)
+        resp, content = self.post(self.container_manifest['launch_urls']['request_token'], body=params)
         if resp['status'] != '200':
             raise SMARTClientError("%s response fetching request token: %s"%(resp['status'], content))
         req_token = dict(urlparse.parse_qsl(content))
@@ -110,16 +110,14 @@ class SMARTClient(oauth.Client):
     def auth_redirect_url(self):
         if not self.token:
             raise SMARTClientError("Client must have a token to get a redirect url")
-        print self.token.key
-        print self.container_manifest['authorize_token_url']
-        return self.container_manifest['authorize_token_url'] + "?oauth_token="+self.token.key
+        return self.container_manifest['launch_urls']['authorize_token'] + "?oauth_token="+self.token.key
         
     def exchange_token(self, verifier):
         """ Exchange the client's current token (should be a request token) for an access token. """
         if not self.token:
             raise SMARTClientError("Client must have a token to exchange.")
         self.token.set_verifier(verifier)
-        resp, content = self.post(self.container_manifest['exchange_token_url'])
+        resp, content = self.post(self.container_manifest['launch_urls']['exchange_token'])
         if resp['status'] != '200':
             raise SMARTClientError("%s response fetching access token: %s"%(resp['status'], content))
         access_token = dict(urlparse.parse_qsl(content))
