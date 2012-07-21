@@ -16,7 +16,6 @@ import common.rdf_tools.util
 KNOWN_SERVERS = {}
 
 # Configuration file defining valid SMART API calls
-CONFIG_FILE = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'common', 'schema', 'smart.owl')
 
 class SMARTClientError(Exception):
     pass
@@ -36,13 +35,6 @@ class SMARTClient(oauth.Client):
         for var_name, value in state_vars.iteritems():
             setattr(self, var_name, value)
  
-        if (not common.rdf_tools.rdf_ontology.parsed):
-            f = open(CONFIG_FILE, 'r')
-            self.__class__.ontology_file = f.read()
-            f.close()
-            common.rdf_tools.rdf_ontology.parse_ontology(SMARTClient.ontology_file)
-            augment(self.__class__)
-
         if self.api_base not in KNOWN_SERVERS:
             resp, content = self.get('/manifest')
             assert resp.status == 200, "Failed to fetch container container manifest"
@@ -154,3 +146,8 @@ class SMARTClient(oauth.Client):
     def request(self, uri, uri_params, *args, **kwargs):
         uri = self._fill_url_template(uri, **uri_params)
         return super(SMARTClient, self).request(uri, *args, **kwargs)
+
+if (not common.rdf_tools.rdf_ontology.parsed):
+    assert False, "No ontology found"
+
+augment(SMARTClient)
