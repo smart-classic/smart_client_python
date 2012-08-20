@@ -97,7 +97,7 @@ class SmartClient(OAuthClient):
         conn.close()
         return ct, data
             
-    def get(self, url, data=None, content_type=None):
+    def get(self, url, query_params={}, data=None, content_type=None):
             """Issue an HTTP GET request to the specified URL and
             return the response body.
 
@@ -106,11 +106,19 @@ class SmartClient(OAuthClient):
 
                   content_type:  defaults to "application/x-www-form-urlencoded"
             """
+            
+            print "QUERY_PARAMS:", query_params
 
             req = None
             if isinstance(data, dict): data = urllib.urlencode(data)
             
-            req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)       
+            req_url = '%s%s'%(self.baseURL, url)
+            if len (query_params) > 0:
+                req_url += "?" + "&".join(("%s=%s" % (k, query_params[k]) for k in query_params))
+                    
+            print "REQ_URL:", req_url
+            
+            req = HTTPRequest('GET', req_url, data=data)       
             ct, ret = self._access_resource(req)
             return SmartResponse (ret, ct)
 
