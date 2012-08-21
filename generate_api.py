@@ -50,11 +50,14 @@ def make_generic_call(call):
     def c(self, *args, **kwargs):
         kwargs['_client'] = self
         url = fill_url_template(call, **kwargs)
-        data = kwargs.get('data', None)
         query_params = get_query_params (call, **kwargs)
+        if len(query_params) > 0:
+            data = query_params
+        else:
+            data = kwargs.get('data', None)
         content_type = kwargs.get('content_type', None)
         f = getattr(self, str(call.http_method).lower())          
-        res =  f(url=url, query_params=query_params, data=data, content_type=content_type)
+        res =  f(url=url, data=data, content_type=content_type)
         ct = res.contentType
         
         try:
