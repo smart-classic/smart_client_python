@@ -7,9 +7,9 @@ import httplib
 from oauth import *
 import time
 import generate_api
-from generate_api import SMARTResponse
-import common.rdf_ontology
-import common.util
+from generate_api import SmartResponse
+import common.rdf_tools.rdf_ontology
+import common.rdf_tools.util
 
 class SmartClient(OAuthClient):
     """Establishes OAuth communication with a SMArt Container, and
@@ -49,14 +49,14 @@ class SmartClient(OAuthClient):
         self.app_id = app_id
         self.stylesheet = None
         
-        if (not common.rdf_ontology.parsed):
+        if (not common.rdf_tools.rdf_ontology.parsed):
             if ontology_loc:
                 f = open(ontology_loc, 'r')
                 self.__class__.ontology_file = f.read()
                 f.close()
             else:
                 self.__class__.ontology_file = self.get("/ontology").body
-            common.rdf_ontology.parse_ontology(SmartClient.ontology_file)
+            common.rdf_tools.rdf_ontology.parse_ontology(SmartClient.ontology_file)
             
         generate_api.augment(self.__class__)
             
@@ -85,6 +85,7 @@ class SmartClient(OAuthClient):
                 path +=  "?"+http_request.data
         else:
             data = http_request.data or ""
+        
         conn.request(http_request.method, path, data, header)
         r = conn.getresponse()
         if (r.status != 200): raise Exception( "SMART API request found unexpected status: %s"%r.status)
@@ -110,9 +111,11 @@ class SmartClient(OAuthClient):
             req = None
             if isinstance(data, dict): data = urllib.urlencode(data)
             
-            req = HTTPRequest('GET', '%s%s'%(self.baseURL, url), data=data)       
+            req_url = '%s%s'%(self.baseURL, url)
+            
+            req = HTTPRequest('GET', req_url, data=data)       
             ct, ret = self._access_resource(req)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
 
     def post(self, url, data="", content_type="application/rdf+xml"):
             """Issue an HTTP POST request to the specified URL and
@@ -124,7 +127,7 @@ class SmartClient(OAuthClient):
             """
             req = HTTPRequest('POST', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             ct, ret = self._access_resource(req,with_content_type=True)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
         
     def put(self, url, data="", content_type="application/rdf+xml"):
             """Issue an HTTP PUT request to the specified URL and
@@ -136,7 +139,7 @@ class SmartClient(OAuthClient):
             """
             req = HTTPRequest('PUT', '%s%s'%(self.baseURL, url), data=data, data_content_type=content_type)
             ct, ret = self._access_resource(req,with_content_type=True)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
 
     def delete(self, url, data=None, content_type=None):
             """Issue an HTTP DELETE request to the specified URL and
@@ -144,7 +147,7 @@ class SmartClient(OAuthClient):
             """
             req = HTTPRequest('DELETE', '%s%s'%(self.baseURL, url), data=data)
             ct, ret = self._access_resource(req)
-            return SMARTResponse (ret, ct)
+            return SmartResponse (ret, ct)
 
     def update_token(self, resource_token):
         """ Sets the session token for subsequent three-legged OAuth requests.
@@ -203,4 +206,4 @@ class SmartClient(OAuthClient):
     def data_mapper(self, data):
         """Hook to parse the results of OAuth requests into a
         query-able RDF graph"""
-        return common.util.parse_rdf(data)
+        return common.rdf_tools.util.parse_rdf(data)

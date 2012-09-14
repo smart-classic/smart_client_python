@@ -3,25 +3,19 @@ Generate all API methods from SMArt OWL ontology
 """
 
 import os, re, json
-import common.rdf_ontology as rdf_ontology
+import common.rdf_tools.rdf_ontology as rdf_ontology
 
 pFormat = "{.*?}"
 
-class SMARTResponse:
+class SmartResponse:
     def __init__ (self, body, contentType = "text/plain", graph = None, json = None):
         self.body = body
         self.contentType = contentType
         self.graph = graph
         self.json = json
 
-def parameter_optional(call, p):
-    mark = str(call.path).find("?")
-    point = str(call.path).find(p)
-    return -1 < mark < point
-
 def fill_url_template(call, *args, **kwargs):
     url =  str(call.path)
-    url = url.split("?")[0]
 
     # Look for each param in kwargs.  
     for p in params(call):
@@ -29,51 +23,54 @@ def fill_url_template(call, *args, **kwargs):
             v = kwargs[p]
             url = url.replace("{%s}"%p, v)
         except KeyError as e:
-            # If not found:
-            #    1.  Try to find it as a direct attribute of the SmartClient
+            # If not found, try to find it as a direct attribute of the SmartClient
             try: v = getattr(kwargs['_client'], p)
             except: 
-                #    2.  See if it's optional (and thus can be skipped)
-                if parameter_optional(call,p):
-                    v = ""
-                else: raise e
+                raise e
         url = url.replace("{%s}"%p, v)
     return url
 
-def call_name(call):
-    ret = str(call.path)
-    ret = ret.split("?")[0]
-    ret = ret.replace("/", "_")
-    ret = re.sub(pFormat, "_X", ret)
-    ret = ret + "_" + str(call.method)
-    ret = re.sub("_+", "_", ret)
-    ret = re.sub("^_", "", ret)
-    return ret
-
 def params(call):
     return [x[1:-1] for x in re.findall(pFormat, str(call.path))]
+    
+def get_query_params(call, *args, **kwargs):
+    queryParams = {}
+
+    if call.cardinality == "multiple":
+        queryParams['limit'] = kwargs.get('limit', None)
+        queryParams['offset'] = kwargs.get('offset', None)
+        
+    for p in call.parameters + call.filters:
+        param_name = str(p.client_parameter_name)
+        queryParams[param_name] = kwargs.get(param_name, None)
+        
+    return {k:queryParams[k] for k in queryParams if queryParams[k]}
 
 def make_generic_call(call):
     def c(self, *args, **kwargs):
         kwargs['_client'] = self
         url = fill_url_template(call, **kwargs)
-        data = kwargs.get('data', None) 
+        query_params = get_query_params (call, **kwargs)
+        if len(query_params) > 0:
+            data = query_params
+        else:
+            data = kwargs.get('data', None)
         content_type = kwargs.get('content_type', None)
-        f = getattr(self, str(call.method).lower())          
+        f = getattr(self, str(call.http_method).lower())          
         res =  f(url=url, data=data, content_type=content_type)
         ct = res.contentType
         
         try:
-            return SMARTResponse (res.body, ct, self.data_mapper(res.body), None)
+            return SmartResponse (res.body, ct, self.data_mapper(res.body), None)
         except:
             pass
             
         try:
-            return SMARTResponse (res.body, ct, None, json.loads(res.body))
+            return SmartResponse (res.body, ct, None, json.loads(res.body))
         except:
             pass
             
-        return SMARTResponse (res.body, ct)
+        return SmartResponse (res.body, ct)
                 
     return c
 
@@ -85,5 +82,5 @@ def augment(client_class):
 %s
 
 Returns RDF Graph containing:  %s
-     """%(c.method, c.path, c.description, c.target)
-        setattr(client_class, call_name(c), call)
+     """%(c.http_method, c.path, c.description, c.target)
+        setattr(client_class, c.client_method_name, call)
