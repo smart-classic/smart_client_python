@@ -180,7 +180,7 @@ class SmartClient(OAuthClient):
         container, sets access tokens on the SmartClient object and
         yields the new record_id."""
 
-        r = self.post("/apps/%s/tokens/records/first"%self.app_id)
+        r = self.post("/apps/%s/tokens/records/first"%self.app_id).body
         
         while r:
             p = {}
@@ -199,7 +199,7 @@ class SmartClient(OAuthClient):
             self.set_token(None)
             self.record_id = None
             try:
-                r = self.post("/apps/%s/tokens/records/%s/next"%(self.app_id, record_id))
+                r = self.post("/apps/%s/tokens/records/%s/next"%(self.app_id, record_id)).body
             except:
                 break
             
