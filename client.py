@@ -64,25 +64,25 @@ class SMARTClient(oauth.Client):
         SmartClient object and yields the new record_id."""
 
         r = self.post("/apps/%s/tokens/records/first" % self.app_id)
-
+        
         while r:
             status = r[0].get('status')
             if '200' != status:
-                print 'Failed:', status
-                break
+                raise Exception('Did not get token: %s (%s)' % (r[1], status))
             
             p = {}
             for pair in r[1].split('&'):
                 (k, v) = [urllib.unquote_plus(x) for x in pair.split('=')] 
                 p[k]=v
             
-            self.record_id = p['smart_record_id']
+            record_id = p['smart_record_id']
+            self.record_id = record_id
             self.update_token(p)
-            yield self.record_id
+            yield record_id
             
             self.record_id = None
             try:
-                r = self.post("/apps/%s/tokens/records/%s/next" % (self.app_id, record_id)).body
+                r = self.post("/apps/%s/tokens/records/%s/next" % (self.app_id, record_id))
             except:
                 break
 
