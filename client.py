@@ -24,7 +24,7 @@ class SMARTClientError(Exception):
 class SMARTClient(oauth.Client):
     """ Establishes OAuth communication with an SMART Container, and provides access to the API. """
 
-    def __init__(self, api_base, consumer_params, **state_vars):
+    def __init__(self, app_id, api_base, consumer_params, **state_vars):
         if consumer_params.get('consumer_key') is None \
             or consumer_params.get('consumer_secret') is None:
             raise SMARTClientError('We need both "consumer_key" and "consumer_secret" in the params dictionary, only got: %s' % consumer_params)
@@ -32,6 +32,7 @@ class SMARTClient(oauth.Client):
         consumer = oauth.Consumer(consumer_params['consumer_key'], consumer_params['consumer_secret'])
         super(SMARTClient, self).__init__(consumer)
 
+        self.app_id = app_id
         self.api_base = api_base
         self._record_id = None
 
@@ -55,6 +56,35 @@ class SMARTClient(oauth.Client):
         if self._record_id != new_record_id:
             self._record_id = new_record_id
             self.token = None
+
+    def loop_over_records(self):    
+        """Iterator allowing background apps to loop through each patient
+        record in the SMArt container, e.g. to perform reporting or analytics.
+        For each patient record in the container, sets access tokens on the
+        SmartClient object and yields the new record_id."""
+
+        r = self.post("/apps/%s/tokens/records/first" % self.app_id)
+
+        while r:
+            status = r[0].get('status')
+            if '200' != status:
+                print 'Failed:', status
+                break
+            
+            p = {}
+            for pair in r[1].split('&'):
+                (k, v) = [urllib.unquote_plus(x) for x in pair.split('=')] 
+                p[k]=v
+            
+            self.record_id = p['smart_record_id']
+            self.update_token(p)
+            yield self.record_id
+            
+            self.record_id = None
+            try:
+                r = self.post("/apps/%s/tokens/records/%s/next" % (self.app_id, record_id)).body
+            except:
+                break
 
 
     def absolute_uri(self, uri):
