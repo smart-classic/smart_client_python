@@ -1,35 +1,40 @@
 import sys
-tmp = sys.stdout
-sys.stdout=sys.stderr
-from smart import SmartClient
-
-SMART_SERVER_OAUTH = {'consumer_key': 'my-app@apps.smartplatforms.org', 
-                      'consumer_secret': 'smartapp-secret'}
-
-SMART_SERVER_PARAMS = {'api_base' :          'http://303.snarked.com:7000'}
-
-
-"""An important static var"""
-s = SmartClient(SMART_SERVER_OAUTH['consumer_key'], 
-                       SMART_SERVER_PARAMS, 
-                       SMART_SERVER_OAUTH)
-
-
 import pydoc
-t = pydoc.TextDoc()
+import re
 
+from client import SMARTClient
+
+CONSUMER_TOKENS = {
+	'consumer_key': 'my-app@apps.smartplatforms.org',
+	'consumer_secret': 'smartapp-secret'
+}
+
+api_base = 'http://localhost:7000'
+
+tmp = sys.stdout
+sys.stdout = sys.stderr
+
+# instantiate our client and TextDoc 
+s = SMARTClient(api_base, CONSUMER_TOKENS)
+t = pydoc.TextDoc()
+#t = pydoc.HTMLDoc()
+
+sys.stdout = tmp
+d = t.docclass(SMARTClient)
+d = pydoc.plain(d)
 # TextDoc default behavior wrecks havoc with markdown interpretation.
 # So strip out the " |" line beginnings...
-sys.stdout = tmp
-d = t.docclass(SmartClient)
-d = pydoc.plain(d)
-print """SMArt Python Client Library
+d = re.sub(r"\n\s*\|", "\n", d)
+
+print """SMART Python Client Library
+===========================
 
 To generate this README:
 
-  $ python generate_readme.py > README
+    $ python generate_readme.py > README
 
 ---
 
 """
+
 print d
