@@ -143,7 +143,7 @@ class SMARTClient(oauth.Client):
             raise SMARTClientError("Client already has a resource token.")
 
         # make sure we have the record id
-        if params.get('smart_record_id') is None and self.record_id is not None:
+        if self.record_id is not None:
             params['smart_record_id'] = self.record_id
 
         # "oauth_callback" can only be "oob" anyway, so just set it
