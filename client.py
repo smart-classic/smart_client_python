@@ -95,6 +95,18 @@ class SMARTClient(oauth.Client):
         while '/' == uri[:1]:
             uri = uri[1:]
         return os.path.join(self.api_base, uri)
+    
+    @property
+    def launch_url(self):
+        """ Returns the start URL where the user can login and select a record
+        """
+        url = self.container_manifest.get('launch_urls', {}).get('app_launch')
+        if url is None:
+            return None
+        
+        # we must now substitute {{app_id}} with our id
+        return re.sub(r"\{\{\s*app_id\s*\}\}", self.app_id, url)
+    
 
     def get(self, uri, body={}, headers={}, **uri_params):
         """ Make an OAuth-signed GET request to SMART Server. """
