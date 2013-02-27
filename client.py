@@ -116,29 +116,49 @@ class SMARTClient(oauth.Client):
             body = urllib.urlencode(body)
             uri = "%s?%s" % (uri, body) if body else uri
 
+        uri_params = self._populated_request_params(uri_params)
         return self.request(self.absolute_uri(uri), uri_params, method="GET", body='', headers=headers)
 
     def put(self, uri, body='', headers={}, content_type=None, **uri_params):
         """ Make an OAuth-signed PUT request to SMART Server. """
         if content_type:
             headers['Content-Type'] = content_type
+        
+        # if our body is not plain, set the content type appropriately
         if isinstance(body, dict):
             body = urllib.urlencode(body)
             headers['Content-Type'] = 'application/x-www-form-urlencoded'
+
+        uri_params = self._populated_request_params(uri_params)
         return self.request(self.absolute_uri(uri), uri_params, method="PUT", body=body, headers=headers)
 
     def post(self, uri, body='', headers={}, content_type=None, **uri_params):
         """ Make an OAuth-signed POST request to SMART Server. """
         if content_type:
             headers['Content-Type'] = content_type
+
+        # if our body is not plain, set the content type appropriately
         if isinstance(body, dict):
             headers['Content-Type'] = 'application/x-www-form-urlencoded'
             body = urllib.urlencode(body)
+
+        uri_params = self._populated_request_params(uri_params)
         return self.request(self.absolute_uri(uri), uri_params, method="POST", body=body, headers=headers)
 
     def delete(self, uri, headers={}, **uri_params):
         """ Make an OAuth-signed DELETE request to SMART Server. """
+        uri_params = self._populated_request_params(uri_params)
         return self.request(self.absolute_uri(uri), uri_params, method="DELETE", headers=headers)
+
+    def _populated_request_params(self, params):
+        """ Makes sure there is the app-id and record-id in the request parameters """
+        if params is None:
+            params = {}
+        if params.get('smart_app_id') is None:
+            params['smart_app_id'] = self.app_id
+        if params.get('smart_record_id') is None:
+            params['smart_record_id'] = self.record_id
+        return params
 
 
     def update_token(self, resource_token):
@@ -153,10 +173,6 @@ class SMARTClient(oauth.Client):
         """ Get a request token from the server. """
         if self.token:
             raise SMARTClientError("Client already has a resource token.")
-
-        # make sure we have the record id
-        if self.record_id is not None:
-            params['smart_record_id'] = self.record_id
 
         # "oauth_callback" can only be "oob" anyway, so just set it
         params['oauth_callback'] = 'oob'
