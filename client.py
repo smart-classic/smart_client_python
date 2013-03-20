@@ -221,6 +221,7 @@ class SMARTClient(oauth.Client):
 
     def _fill_url_template(self, url, **kwargs):
         for param_name in re.findall("{(.*?)}", str(url)):
+            v = None
             arg_name = param_name.lower()
             try:
                 v = kwargs[arg_name]
@@ -231,7 +232,8 @@ class SMARTClient(oauth.Client):
                 except AttributeError:
                     raise KeyError("Expected argument %s" % arg_name)
 
-            url = url.replace("{%s}"%param_name, v)
+            if v is not None:
+                url = url.replace("{%s}" % param_name, unicode(v))
         return url
 
     def request(self, uri, uri_params, *args, **kwargs):
