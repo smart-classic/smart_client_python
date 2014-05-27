@@ -1,5 +1,5 @@
 """
-Generate all API methods from SMArt OWL ontology
+Generate all API methods from SMART OWL ontology
 """
 
 import os
