@@ -4,20 +4,11 @@ import re
 
 from client import SMARTClient
 
-CONSUMER_TOKENS = {
-	'consumer_key': 'my-app@apps.smartplatforms.org',
-	'consumer_secret': 'smartapp-secret'
-}
-
-api_base = 'http://localhost:7000'
-
 tmp = sys.stdout
 sys.stdout = sys.stderr
 
-# instantiate our client and TextDoc 
-s = SMARTClient(api_base, CONSUMER_TOKENS)
+# instantiate TextDoc
 t = pydoc.TextDoc()
-#t = pydoc.HTMLDoc()
 
 sys.stdout = tmp
 d = t.docclass(SMARTClient)
