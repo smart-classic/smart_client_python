@@ -94,7 +94,7 @@ class SMARTClient(oauth.Client):
             return uri
         while '/' == uri[:1]:
             uri = uri[1:]
-        return os.path.join(self.api_base, uri)
+        return '/'.join([self.api_base, uri])
     
     @property
     def launch_url(self):
